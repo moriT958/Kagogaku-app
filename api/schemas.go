@@ -6,7 +6,7 @@ import "time"
 type PostNewCharacterReq struct {
 	Id         string `json:"id"` // UUID in local storage
 	Name       string `json:"name"`
-	Appearance []byte `json:"appearance"`
+	Appearance string `json:"appearance"`
 }
 
 // GET /charactor/{id}

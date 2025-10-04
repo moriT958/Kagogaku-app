@@ -1,10 +1,12 @@
 package api
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -126,8 +128,18 @@ func CharacterWakeUpPatch(w http.ResponseWriter, r *http.Request) {
 	char.Foods = []string{}
 	mu.Unlock()
 
+	// ファイルを Base64 で読み込む
+	imgData, err := os.ReadFile(appearance)
+	if err != nil {
+		slog.Error(err.Error())
+		http.Error(w, "Failed to encode base64", http.StatusInternalServerError)
+		return
+	}
+	var appearanceB64 []byte
+	base64.StdEncoding.Encode(appearanceB64, imgData)
+
 	// NOTE: ロック外でジョブ登録しないとデッドロックする
-	jobId, err := EnqueueTrainJob(appearance, sleepDuration, foods)
+	jobId, err := EnqueueTrainJob(appearanceB64, sleepDuration, foods)
 	if err != nil {
 		slog.Error(err.Error())
 		http.Error(w, "Failed to create job", http.StatusInternalServerError)
