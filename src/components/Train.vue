@@ -1,10 +1,15 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 // 時刻を表示するための変数
 const sleepTime = ref(null)
 const wakeTime = ref(null)
 const sleepingTime = ref(null)
+const selectedImage = ref(null)
+
+onMounted(() =>{
+  selectedImage.value = localStorage.getItem("c1")
+})
 
 // ボタンクリック時の関数
 const recordSleep = () => {
@@ -33,15 +38,23 @@ const message = computed(() => {
 </script>
 
 <template>
-    <h1>(キャラ名)育成画面</h1>
+    <h1>{{cname}}育成画面</h1>
     <input v-model="cname"></input>
     <div class="chara-status">
       <span class="cname">キャラ名: {{ cname }}</span>
       <span class="cstatus">健康状態: {{ message }}</span>
     </div>
 
-    <div class="chara-image">
+    <!-- <div class="chara-image">
       <img src="https://th.bing.com/th/id/R.3820a50e8d207e04c5c4a23d14e5cfca?rik=DgZma4LjvH8uhw&riu=http%3a%2f%2fwww.kagoshima-u.ac.jp%2fabout%2fsattun.jpg&ehk=X5F37PCTD7MCu%2bkfiLRjSOJ2ZiV8xRiKkFDVrG7zvyE%3d&risl=&pid=ImgRaw&r=0" alt="さっつん"></img>
+    </div> -->
+
+    <div v-if="selectedImage">
+      <p>選択されたキャラ:</p>
+      <img :src="selectedImage" alt="キャラ画像" width="200" />
+    </div>
+    <div v-else>
+      <p>キャラがまだ選択されていません。</p>
     </div>
     
     <div class="buttons">
