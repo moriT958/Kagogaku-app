@@ -2,22 +2,30 @@
 
 ## エンドポイント
 
+- `POST /character/new`: キャラクターを作成
 
-- `GET /sleep`: 寝る
-- `GET /wake-up`: 起きる 
-
-- `POST /eat`: ご飯を食べる
-
+リクエスト
 ```json
 {
-    "food": "ハンバーグ"
+    "id": "uuid",
+    "name": "character name",
+    "appearance": "base64 image"
 }
 ```
 
-- `POST /train`: キャラの体調更新 
+- `GET /character/{id}`: キャラクタ情報を取得 
+  - id はフロントでローカルストレージに保存されている
 
+- `PATCH /character/{id}/sleep`: 寝る
+- `PATCH /character/{id}/wake-up`: 起きる 
+
+- `GET /train-status/{jobId}`: キャラ画像変換ジョブの進捗確認 (完了 or 未完了)
+
+- `POST /character/{id}/eat`: ご飯を食べる
+
+リクエスト
 ```json
 {
-    "appearance": "base64 形式の画像"
+    "food": "ハンバーグ"
 }
 ```
