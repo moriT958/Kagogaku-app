@@ -1,5 +1,5 @@
 <script setup>
-  import {ref} from 'vue';
+  import { ref } from 'vue';
 
   const textInput=ref('');
 </script>
@@ -7,10 +7,7 @@
 <template>
   <p>好きなキャラを選んでね！</p>
   <div class="images">
-    <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_KDuCUJ4SXPSs6ZVz2LFbkWyS4XTccFEfiizRuoUPM9PmR1Ob9P7IJpFG4hb2_wloVK6eMLvN8bwv8ILauUQWacxn7DzeHCvuQudsNZucMUTrzaMdHRzwjBJ5pDVJNTMhwAnDegyKBtAs6wEjFgsc2HY-9q4WoCHVuBzYIQ_Xv1KPBK8ZBHyx9EpGX3PA/s180-c/bucket_boy.png" class="logo vue" alt="Vue logo" />
   </div>
     <p>キャラ名</p>
   <input type="text" v-model="textInput" />
