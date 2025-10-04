@@ -20,4 +20,4 @@ curl -s -X POST "http://localhost:8080/character/test-character-001/eat" \
   -H "Content-Type: application/json" \
   -d '{"food": "ラーメン"}'
 
-curl -s -X GET "http://localhost/train-status/1"
+curl -s -X GET "http://localhost:8080/train-status/1"

@@ -66,6 +66,7 @@ func CharacterGet(w http.ResponseWriter, r *http.Request) {
 		SleepTime:  char.SleepTime,
 		WakeUpTime: char.WakeUpTime,
 		Foods:      char.Foods,
+		Appearance: char.Appearance,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -116,7 +117,6 @@ func CharacterWakeUpPatch(w http.ResponseWriter, r *http.Request) {
 	char.WakeUpTime = time.Now()
 	sleepDuration := float32(char.WakeUpTime.Sub(char.SleepTime).Hours())
 
-	appearance := char.Appearance
 	foods := char.Foods
 
 	// 日が更新されたので、昨日までの情報 (Id, Name 以外) を初期化する
@@ -127,7 +127,11 @@ func CharacterWakeUpPatch(w http.ResponseWriter, r *http.Request) {
 	mu.Unlock()
 
 	// NOTE: ロック外でジョブ登録しないとデッドロックする
-	jobId, err := EnqueueTrainJob(appearance, sleepDuration, foods)
+	jobId, err := EnqueueTrainJob(JobData{
+		CharacterId:   char.Id,
+		SleepDuration: sleepDuration,
+		Foods:         foods,
+	})
 	if err != nil {
 		slog.Error(err.Error())
 		http.Error(w, "Failed to create job", http.StatusInternalServerError)
@@ -173,6 +177,10 @@ func TrainJobStatusGet(w http.ResponseWriter, r *http.Request) {
 		resp = GetTrainStatusResp{
 			JobStatus: "Completed",
 		}
+	default:
+		slog.Error("Job status is invalid")
+		http.Error(w, "Job status is invalid", http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")

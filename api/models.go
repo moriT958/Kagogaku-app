@@ -6,7 +6,7 @@ import "time"
 type Character struct {
 	Id         string
 	Name       string
-	Appearance []byte // Base64 Image
+	Appearance string // Image Path
 	Status     CharacterHealth
 	SleepTime  time.Time
 	WakeUpTime time.Time

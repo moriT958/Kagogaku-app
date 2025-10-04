@@ -6,7 +6,7 @@ import "time"
 type PostNewCharacterReq struct {
 	Id         string `json:"id"` // UUID in local storage
 	Name       string `json:"name"`
-	Appearance []byte `json:"appearance"`
+	Appearance string `json:"appearance"`
 }
 
 // GET /charactor/{id}
@@ -16,7 +16,8 @@ type CharacterResp struct {
 	Status     string    `json:"status"` // health(default), lackOfSleep
 	SleepTime  time.Time `json:"sleepTime"`
 	WakeUpTime time.Time `json:"wakeUpTime"`
-	Foods      []string  `json:"foods"` // foods per date
+	Foods      []string  `json:"foods"`      // foods per date
+	Appearance string    `json:"appearance"` // image path
 }
 
 // PATCH character/{id}/wake-up
