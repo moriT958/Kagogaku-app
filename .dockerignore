@@ -1,0 +1,17 @@
+.git
+.gitignore
+
+.env
+
+node_modules/
+
+dist/
+build/
+
+.vscode/
+.devcontainer/
+
+.DS_Store
+
+*.log
+README.md

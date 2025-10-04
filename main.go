@@ -31,7 +31,11 @@ func main() {
 	// ジョブワーカーを起動
 	api.StartJobWorker()
 
-	address := "0.0.0.0:8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	address := "0.0.0.0:" + port
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /hello", helloHandler)
 	mux.HandleFunc("POST /character/new", api.NewCharacterPost)
@@ -58,9 +62,9 @@ func init() {
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
-	// .env ファイルからの環境変数読み込み
+	// .env ファイルからの環境変数読み込み（ファイルが存在しない場合はスキップ）
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
+		slog.Warn(".env file not found, using environment variables")
 	}
 
 	// タイムゾーンを日本時間に設定

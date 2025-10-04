@@ -1,0 +1,52 @@
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Dockerfile'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy kagogaku-api \
+            --source . \
+            --region asia-northeast1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --project ${{ secrets.GCP_PROJECT_ID }} \
+            --set-env-vars OPENAI_SECRET_KEY=${{ secrets.OPENAI_SECRET_KEY }}
+
+      - name: Show deployment URL
+        run: |
+          echo "Deployment complete!"
+          gcloud run services describe kagogaku-api \
+            --region asia-northeast1 \
+            --platform managed \
+            --project ${{ secrets.GCP_PROJECT_ID }} \
+            --format 'value(status.url)'
