@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"todo/api"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -119,19 +120,28 @@ func main() {
 		log.Fatal("failed to ping MySQL: ", err)
 	}
 
-	imgs, err := generateCharacterImageHandler()
-	if err != nil {
-		log.Fatal(err)
-	}
-	imgPaths, err := saveGeneratedImages("images", imgs)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(imgPaths)
+	// imgs, err := generateCharacterImageHandler()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// imgPaths, err := saveGeneratedImages("images", imgs)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println(imgPaths)
+
+	// ジョブワーカーを起動
+	api.StartJobWorker()
 
 	address := "0.0.0.0:8080"
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /hello", helloHandler)
+	mux.HandleFunc("POST /character/new", api.NewCharacterPost)
+	mux.HandleFunc("GET /character/{id}", api.CharacterGet)
+	mux.HandleFunc("PATCH /character/{id}/sleep", api.CharacterSleepPatch)
+	mux.HandleFunc("PATCH /character/{id}/wake-up", api.CharacterWakeUpPatch)
+	mux.HandleFunc("GET /train-status/{jobId}", api.TrainJobStatusGet)
+	mux.HandleFunc("POST /character/{id}/eat", api.CharacterEatPost)
 	svr := http.Server{
 		Addr:    address,
 		Handler: mux,
