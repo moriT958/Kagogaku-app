@@ -2,7 +2,7 @@
   "name": "Todo App",
   "dockerComposeFile": "compose.yml",
   "service": "frontend",
-  "runServices": ["frontend", "backend", "db"],
+  "runServices": ["frontend", "backend"],
   "workspaceFolder": "/workspace",
 
   // Configure tool-specific properties.
@@ -24,7 +24,7 @@
   },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [3000, 8080, 3306],
+  "forwardPorts": [3000, 8080],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",

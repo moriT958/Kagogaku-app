@@ -27,21 +27,6 @@ services:
     env_file:
       - "../.env"
 
-  db:
-    image: mysql:8.0
-    container_name: mysql
-    volumes:
-      - ../docker/mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    networks:
-      - todo-network
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: tododb
-      MYSQL_USER: username
-      MYSQL_PASSWORD: password
-
 networks:
   todo-network:
     driver: bridge
