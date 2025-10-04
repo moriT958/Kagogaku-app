@@ -1,17 +1,30 @@
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import { computed, ref } from 'vue'
+import Generate from './components/Generate.vue'
+import Train from './components/Train.vue'
+/* import NotFound from './NotFound.vue' */
+
+const routes = {
+  '/': Generate,
+  '/Train': Train
+}
+
+const currentPath = ref(window.location.hash)
+
+window.addEventListener('hashchange', () => {
+  currentPath.value = window.location.hash
+})
+
+const currentView = computed(() => {
+  return routes[currentPath.value.slice(1) || '/'] || NotFound
+})
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="ばぐシューター Todo アプリ" />
+  <a href="#/">キャラ生成</a> |
+  <a href="#/Train">キャラ育成</a> |
+  <a href="#/non-existent-path">Broken Link</a>
+  <component :is="currentView" />
 </template>
 
 <style scoped>
