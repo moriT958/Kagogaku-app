@@ -16,7 +16,8 @@ type CharacterResp struct {
 	Status     string    `json:"status"` // health(default), lackOfSleep
 	SleepTime  time.Time `json:"sleepTime"`
 	WakeUpTime time.Time `json:"wakeUpTime"`
-	Foods      []string  `json:"foods"` // foods per date
+	Foods      []string  `json:"foods"`      // foods per date
+	Appearance string    `json:"appearance"` // image path
 }
 
 // PATCH character/{id}/wake-up

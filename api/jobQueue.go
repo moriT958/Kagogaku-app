@@ -4,9 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"math/rand"
 	"sync"
-	"time"
 )
 
 var (
@@ -26,12 +24,19 @@ var (
 type Job struct {
 	Id     string
 	Status JobStatus
+	Data   JobData
+}
+
+type JobData struct {
+	CharacterId   string
+	SleepDuration float32
+	Foods         []string
 }
 
 type JobStatus int
 
 const (
-	completed = iota
+	completed JobStatus = iota
 	processing
 	failed
 )
@@ -45,32 +50,44 @@ func StartJobWorker() {
 	}()
 }
 
-//	ジョブの内容:
-//	  キャラの画像を OpenAI で編集
-//	  昨日の食べたもの、睡眠時間、元の見た目の画像を元に変換
-
-// processJob は実際のジョブ処理を行います（OpenAI API の代わりに time.Sleep でシミュレート）
+// processJob は実際のジョブ処理を行います
 func processJob(job *Job) {
 	slog.Info(fmt.Sprintf("Processing job %s", job.Id))
 
-	// 5〜10秒の処理時間をシミュレート
-	processingTime := 5 + rand.Intn(6) // 5〜10秒
-	time.Sleep(time.Duration(processingTime) * time.Second)
-
-	// 90% の確率で成功、10% の確率で失敗
-	mu.Lock()
-	defer mu.Unlock()
-
-	if rand.Float32() < 0.9 {
-		job.Status = completed
-		slog.Info(fmt.Sprintf("Job %s completed successfully", job.Id))
-	} else {
+	// キャラクターの現在の Appearance を取得
+	mu.RLock()
+	char, exists := characterStore[job.Data.CharacterId]
+	if !exists {
+		mu.RUnlock()
+		slog.Error("Character not found")
 		job.Status = failed
-		slog.Error(fmt.Sprintf("Job %s failed", job.Id))
+		return
 	}
+	currentAppearance := char.Appearance
+	mu.RUnlock()
+
+	prompt := buildPrompt(*job)
+	editedImgPath, err := updateCharacterImage(currentAppearance, prompt)
+	if err != nil {
+		job.Status = failed
+		slog.Error(fmt.Sprintf("Job %s failed: %v", job.Id, err))
+		return
+	}
+
+	mu.Lock()
+	char, exists = characterStore[job.Data.CharacterId]
+	if !exists {
+		mu.Unlock()
+		slog.Error("Character not found")
+		job.Status = failed
+		return
+	}
+	char.Appearance = editedImgPath
+	job.Status = completed
+	mu.Unlock()
 }
 
-func EnqueueTrainJob(base64Image []byte, sleepDuration float32, foods []string) (int, error) {
+func EnqueueTrainJob(data JobData) (int, error) {
 	mu.Lock()
 	jobCounter++
 	jobId := jobCounter
@@ -78,6 +95,7 @@ func EnqueueTrainJob(base64Image []byte, sleepDuration float32, foods []string) 
 	job := &Job{
 		Id:     fmt.Sprintf("%d", jobId),
 		Status: processing,
+		Data:   data,
 	}
 	jobQueue[fmt.Sprintf("%d", jobId)] = job
 	mu.Unlock()
