@@ -1,30 +1,48 @@
 <script setup>
   import { ref } from 'vue';
   // import Train from './components/Train.vue'
-  const name=ref('');
+  import { createCharacter } from '../libs/saveCharacter';
+
+  const cname=ref('');
+  const cimage=ref(null);
+
   const goToTrain=()=>{
-    if(selectedIndex.value===null){
-      alert("キャラを選択してください")
-      return
-    }
-    if(name.value===''){
-      alert("名前を入力してください")
-      return
-    }
     window.location.hash='/Train'
   }
+
+  const convertUrlToBase64 = async (url) => {
+    const response = await fetch(url)
+    const blob = await response.blob()
+    const reader = new FileReader()
+    return new Promise((resolve) => {
+      reader.onloadend = () => resolve(reader.result)
+      reader.readAsDataURL(blob)
+  })
+}
   
   const imageList=[
-    'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_KDuCUJ4SXPSs6ZVz2LFbkWyS4XTccFEfiizRuoUPM9PmR1Ob9P7IJpFG4hb2_wloVK6eMLvN8bwv8ILauUQWacxn7DzeHCvuQudsNZucMUTrzaMdHRzwjBJ5pDVJNTMhwAnDegyKBtAs6wEjFgsc2HY-9q4WoCHVuBzYIQ_Xv1KPBK8ZBHyx9EpGX3PA/s180-c/bucket_boy.png',
+    '/mascot1.png',
     'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjs8AvZeLXqN9PMHmzpxBpXq5033bksBQHA3PD35qpdKvH1Rs6E30OYoe0u4Bpch_7tv0cBy6jJLSOzCwDKDGUlrJybLhGyqlbWGe9wFE5_3i6ccR2C3TVj9Tq-rvd8P9CT7VT3aof5jBDP/s180-c/buranko_girl_sad.png',
     'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhFEro64Nm55L1dVyHRAcfxmBk10XUp8LhnimtcACnq4y3NcQ2CL90khDUTdwXKhlAc4bSXDZ79Zuo8rLSazzCwH61-iuyQgTLCaDtb5Ol4kJfPvswy2qOa1lbO1-RiIA8rMf_VkuRdBnKQ/s180-c/sori_snow_boy.png'
   ]
 
   const selectedIndex=ref(null)
 
+  const handleCreate = async () => {
+  try {
+    const result = await createCharacter(cname.value, cimage.value)
+    alert(`キャラクター作成成功！ID: ${result.id}`)
+    goToTrain()
+
+  } catch (error) {
+    alert(`エラー: ${error.message}`)
+  }
+}
+
   function handleClick(img,index){
     selectedIndex.value=index
     localStorage.setItem('c1', img)
+    cimage.value = img;
     // alert(`選択した画像を保存しました: ${index}`);
   }
 </script>
@@ -40,9 +58,8 @@
       @click="handleClick(img,index)"
   </div>
   <p>キャラ名</p>
-  <input type="text" v-model="name" placeholder="名前を入力してください" />
-  <p></p>
-  <button @click="goToTrain(e)" class="start">はじめる</button>
+  <input v-model="cname" placeholder="キャラ名を入力"></input></br>
+  <button @click="handleCreate" class="start">Start</button>
 </template>
 
 <style>
