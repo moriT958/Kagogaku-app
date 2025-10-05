@@ -67,6 +67,7 @@ const saveImage = (url) => {
       />
     </div>
     <input v-model="cname" placeholder="キャラ名を入力"></input>
+    <p></p>
     <button @click="handleCreate" class="btn">start</button>
 
   </div>
@@ -101,7 +102,21 @@ img:hover {
 }
 
 .btn{
-  border: 1px solid black;
-  margin-top: 10px;
+    color: white;
+    display: inline-block;
+    border: 2px solid white;
+    background: red; 
+    padding:o 8px;
+    font-size:32px;
 }
+
+input{
+    width:352px;
+    height:32px;
+    font-size:32px;
+    background:white;
+    color:black;
+    border-radius: 20px;
+    margin-top: 20px;
+  }
 </style>
