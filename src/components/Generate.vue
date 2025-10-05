@@ -24,11 +24,11 @@ const handleCreate = async () => {
   try {
     const result = await createCharacter(cname.value, cimage.value)
     alert(`キャラクター作成成功！ID: ${result.id}`)
-    goToTrain()
 
   } catch (error) {
     alert(`エラー: ${error.message}`)
   }
+  goToTrain()
 }
 
 const saveImage = (url) => {
@@ -42,6 +42,7 @@ const saveImage = (url) => {
 
 <template>
   <div>
+    <h1><span class="fri">とも</span><span class="life">ライフ</span></h1>
     <h2>育成するキャラを選択</h2>
     <div class="image-list">
       <!-- 画像1 -->
@@ -96,6 +97,13 @@ img:hover {
   transform: scale(1.05);
 }
 
+.fri{
+  color: green;
+}
+
+.life{
+  color: orange;
+}
 /* 他の画像を暗くする */
 .dimmed {
   filter: brightness(0.5);
