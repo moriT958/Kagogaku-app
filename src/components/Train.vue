@@ -1,5 +1,6 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { getCharacter, sleepCharacter, wakeUpCharacter } from '../libs/wakeUpCharacter'
 
 // 時刻を表示するための変数
 const sleepTime = ref(null)
@@ -7,6 +8,38 @@ const wakeTime = ref(null)
 const sleepingTime = ref(null)
 const selectedImage = ref(null)
 const characterName = ref('')
+const test = reactive({
+  name: '',
+  status: '',
+  sleepTime: '',    // JSON では文字列で受け取る
+  wakeUpTime: '',
+  foods: [],
+  appearance: ''
+})
+
+onMounted(async () => {
+  const data = await getCharacter()
+  const getSleepResult = await sleepCharacter()
+  const getWakeResult = await wakeUpCharacter()
+  if (data) Object.assign(test, data)
+  console.log(test)
+})
+
+const messages = [
+  "こんにちは！",
+  "調子はどう?",
+  "おなか減った・・・",
+  "",
+  "さわんな！"
+];
+
+const cmessage = ref("");
+
+// ランダムメッセージを選んで表示
+const showRandomMessage = () => {
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  cmessage.value = messages[randomIndex];
+};
 
 
 onMounted(() => {
@@ -19,15 +52,7 @@ onMounted(() => {
 })
 
 // ボタンクリック時の関数
-const recordSleep = () => {
-  const now = new Date()
-  sleepTime.value = now.toLocaleTimeString() // 現在時刻を文字列で保存
-}
 
-const recordWake = () => {
-  const now = new Date()
-  wakeTime.value = now.toLocaleTimeString()
-}
 
 const number = ref(0)
 const cname = ref('')
@@ -48,23 +73,24 @@ const message = computed(() => {
   <div class="all">
     <input v-model="cname"></input>
     <div class="chara-status">
-      <span class="cname">キャラ名: {{ cname }}</span>
-      <span class="cstatus">健康状態: {{ message }}</span>
+      <span class="cname">キャラ名: {{test.name }}</span>
+      <span class="cstatus">健康状態: {{ test.status }}</span>
     </div>
-    
+
     <div v-if="selectedImage" class="chara_img">
-      <img :src="selectedImage" alt="キャラ画像" width="200" />
+      <img :src="selectedImage" alt="キャラ画像" width="200" @click="showRandomMessage"/>
     </div>
     <div v-else>
       <p>キャラがまだ選択されていません。</p>
     </div>
+    <p class="cmessage">{{ cmessage }}</p>
     
     <div class="buttons">
-      <button @click="recordSleep" class="sleepbtn">
+      <button @click="sleepCharacter" class="sleepbtn">
         <img src="/sleep_cat.png" class="btn_img"></img>
         <p class="btn_t">就寝</p>
       </button>
-      <button @click="recordWake" class="wakebtn">
+      <button @click="wakeUpCharacter" class="wakebtn">
         <img src="/wake_cat.png" class="btn_img"></img>
         <p class="btn_t">起床</p>
       </button>
@@ -97,6 +123,12 @@ const message = computed(() => {
   background-color: pink;
   border-radius: 20px;
   padding: 5px;
+}
+
+.cmessage{
+  border: 3px solid black;
+  border-radius: 20px;
+  background-color: white;
 }
 
 .cstatus{

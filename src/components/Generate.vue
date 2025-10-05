@@ -1,9 +1,34 @@
 <script setup>
+import { ref } from 'vue'
+import { createCharacter } from '../libs/saveCharacter'
 
+const cname = ref('')
+const cimage = ref(null)
+
+const convertUrlToBase64 = async (url) => {
+  const response = await fetch(url)
+  const blob = await response.blob()
+  const reader = new FileReader()
+  return new Promise((resolve) => {
+    reader.onloadend = () => resolve(reader.result)
+    reader.readAsDataURL(blob)
+  })
+}
+
+const handleCreate = async () => {
+  try {
+    const result = await createCharacter(cname.value, cimage.value)
+    alert(`キャラクター作成成功！ID: ${result.id}`)
+  } catch (error) {
+    alert(`エラー: ${error.message}`)
+  }
+}
 
 const saveImage = (url) => {
   localStorage.setItem('c1', url)
   alert(`選択した画像を保存しました: ${url}`)
+  cimage.value = url
+  console.log("Base64変換結果:", cimage.value.slice(0, 50) + "...")
 }
 
 </script>
@@ -31,6 +56,9 @@ const saveImage = (url) => {
         @click="saveImage('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhFEro64Nm55L1dVyHRAcfxmBk10XUp8LhnimtcACnq4y3NcQ2CL90khDUTdwXKhlAc4bSXDZ79Zuo8rLSazzCwH61-iuyQgTLCaDtb5Ol4kJfPvswy2qOa1lbO1-RiIA8rMf_VkuRdBnKQ/s180-c/sori_snow_boy.png')"
       />
     </div>
+    <input v-model="cname"></input>
+    <button @click="handleCreate">ok</button>
+
   </div>
 </template>
 
