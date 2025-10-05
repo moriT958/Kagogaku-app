@@ -45,15 +45,14 @@ const message = computed(() => {
 </script>
 
 <template>
-    <h1>育成画面</h1>
+  <div class="all">
     <input v-model="cname"></input>
     <div class="chara-status">
       <span class="cname">キャラ名: {{ cname }}</span>
       <span class="cstatus">健康状態: {{ message }}</span>
     </div>
     
-    <div v-if="selectedImage">
-      <p>選択されたキャラ: {{ selectedImage }}</p>
+    <div v-if="selectedImage" class="chara_img">
       <img :src="selectedImage" alt="キャラ画像" width="200" />
     </div>
     <div v-else>
@@ -61,26 +60,41 @@ const message = computed(() => {
     </div>
     
     <div class="buttons">
-      <button @click="recordSleep" class="sleepbtn">就寝</button>
-      <button @click="recordWake" class="wakebtn">起床</button>
+      <button @click="recordSleep" class="sleepbtn">
+        <img src="/sleep_cat.png" class="btn_img"></img>
+        <p class="btn_t">就寝</p>
+      </button>
+      <button @click="recordWake" class="wakebtn">
+        <img src="/wake_cat.png" class="btn_img"></img>
+        <p class="btn_t">起床</p>
+      </button>
       <!-- <input id="meal"></input> -->
-      <input id="test" type="number" v-model.number="number">
+      <input id="test" type="number" v-model.number="number" class="tinput">
     </div>
 
     <div class="status">
-      <p v-if="sleepTime">就寝時刻: {{ sleepTime }}</p>
-      <p v-if="wakeTime">起床時刻: {{ wakeTime }}</p>
+      <p v-if="sleepTime" class="time">就寝時刻: {{ sleepTime }}</p>
+      <p v-if="wakeTime" class="time">起床時刻: {{ wakeTime }}</p>
     </div>
+
+  </div>
 </template>
 
 <style scoped>
+.all{
+  width: 100%;
+  height: auto;
+  background-color: beige;
+}
+
 .chara-status{
   display: flex;
   justify-content: space-between;
 }
 
 .cname{
-  border: 1px solid green;
+  /* border: 1px solid green; */
+  background-color: pink;
   border-radius: 20px;
   padding: 5px;
 }
@@ -96,9 +110,20 @@ img{
   height: auto;
 }
 
-.chara-image{
+.btn_t{
+  font-size: 20px;
+}
+
+.btn_img{
+  width: 40px;
+  height: auto;
+}
+
+.chara_img{
   margin-bottom: 50px;
-  background-color: black;
+  /*background-color: black;*/
+  width: max;
+  height: auto;
 }
 
 .buttons{
@@ -106,28 +131,33 @@ img{
   height: 100%;
   display: flex;
   justify-content: space-between;
-  /* background-color: black; */
+  background-color: lightblue;
   border-radius: 12px;
-}
-
-button{
-  margin: 20px;
-  border: 1px solid black;
 }
 
 .sleepbtn{
   color: blue;
+  margin: 10px;
 }
 
 .wakebtn{
   color: red;
+  margin: 10px;
 }
 
-input{
+.tinput{
   margin: 20px;
+  border-radius: 20px;
+
 }
 
 .status{
-  border: 5px solid black;
+  border: 2px solid yellowgreen;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.time{
+  color: yellowgreen;
 }
 </style>

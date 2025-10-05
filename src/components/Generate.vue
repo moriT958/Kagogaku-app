@@ -20,9 +20,9 @@ const saveImage = (url) => {
       />
       <!-- 画像2 -->
       <img 
-        src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjs8AvZeLXqN9PMHmzpxBpXq5033bksBQHA3PD35qpdKvH1Rs6E30OYoe0u4Bpch_7tv0cBy6jJLSOzCwDKDGUlrJybLhGyqlbWGe9wFE5_3i6ccR2C3TVj9Tq-rvd8P9CT7VT3aof5jBDP/s180-c/buranko_girl_sad.png" 
+        src="/mascot1.png" 
         alt="キャラ2"
-        @click="saveImage('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjs8AvZeLXqN9PMHmzpxBpXq5033bksBQHA3PD35qpdKvH1Rs6E30OYoe0u4Bpch_7tv0cBy6jJLSOzCwDKDGUlrJybLhGyqlbWGe9wFE5_3i6ccR2C3TVj9Tq-rvd8P9CT7VT3aof5jBDP/s180-c/buranko_girl_sad.png')"
+        @click="saveImage('/mascot1.png')"
       />
       <!-- 画像3 -->
       <img 
