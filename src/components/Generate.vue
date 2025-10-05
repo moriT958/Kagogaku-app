@@ -1,8 +1,11 @@
 <script setup>
+
+
 const saveImage = (url) => {
   localStorage.setItem('c1', url)
   alert(`選択した画像を保存しました: ${url}`)
 }
+
 </script>
 
 <template>
@@ -11,9 +14,9 @@ const saveImage = (url) => {
     <div class="image-list">
       <!-- 画像1 -->
       <img 
-        src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_KDuCUJ4SXPSs6ZVz2LFbkWyS4XTccFEfiizRuoUPM9PmR1Ob9P7IJpFG4hb2_wloVK6eMLvN8bwv8ILauUQWacxn7DzeHCvuQudsNZucMUTrzaMdHRzwjBJ5pDVJNTMhwAnDegyKBtAs6wEjFgsc2HY-9q4WoCHVuBzYIQ_Xv1KPBK8ZBHyx9EpGX3PA/s180-c/bucket_boy.png" 
+        src="/bucket_boy.png" 
         alt="キャラ1"
-        @click="saveImage('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_KDuCUJ4SXPSs6ZVz2LFbkWyS4XTccFEfiizRuoUPM9PmR1Ob9P7IJpFG4hb2_wloVK6eMLvN8bwv8ILauUQWacxn7DzeHCvuQudsNZucMUTrzaMdHRzwjBJ5pDVJNTMhwAnDegyKBtAs6wEjFgsc2HY-9q4WoCHVuBzYIQ_Xv1KPBK8ZBHyx9EpGX3PA/s180-c/bucket_boy.png')"
+        @click="saveImage('/bucket_boy.png')"
       />
       <!-- 画像2 -->
       <img 
