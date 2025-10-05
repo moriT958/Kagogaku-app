@@ -1,13 +1,11 @@
 <script setup>
 import { computed, ref } from 'vue'
 import Generate from './components/Generate.vue'
-import Home from './components/Home.vue'
 import Train from './components/Train.vue'
 
 const routes = {
-  '/': Home,
+  '/': Generate,
   '/Train': Train,
-  '/Generate': Generate
 }
 
 const currentPath = ref(window.location.hash)
