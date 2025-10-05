@@ -8,6 +8,7 @@ const sleepingTime = ref(null)
 const selectedImage = ref(null)
 const characterName = ref('')
 
+
 onMounted(() => {
   const saved = localStorage.getItem("c1")
   if (saved) {
