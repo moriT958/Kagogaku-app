@@ -22,9 +22,8 @@ const currentView = computed(() => {
 </script>
 
 <template>
-  <a href="#/">キャラ生成</a> |
+  <a href="#/Generate">キャラ生成</a> |
   <a href="#/Train">キャラ育成</a> |
-  <a href="#/Generate">キャラ生成(仮)</a> |
   <component :is="currentView" />
 </template>
 

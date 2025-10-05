@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { getCharacter, sleepCharacter, wakeUpCharacter } from '../libs/wakeUpCharacter'
 
 // 時刻を表示するための変数
@@ -8,6 +8,7 @@ const wakeTime = ref(null)
 const sleepingTime = ref(null)
 const selectedImage = ref(null)
 const characterName = ref('')
+const meal = ref('')
 const test = reactive({
   name: '',
   status: '',
@@ -24,6 +25,16 @@ onMounted(async () => {
   if (data) Object.assign(test, data)
   console.log(test)
 })
+
+const recordSleep = () => {
+  const now = new Date()
+  sleepTime.value = now.toLocaleTimeString() // 現在時刻を文字列で保存
+}
+
+const recordWake = () => {
+  const now = new Date()
+  wakeTime.value = now.toLocaleTimeString()
+}
 
 const messages = [
   "こんにちは！",
@@ -56,22 +67,10 @@ onMounted(() => {
 
 const number = ref(0)
 const cname = ref('')
-
-// 数値に応じて文字列を返す
-const message = computed(() => {
-  if (number.value < 30) {
-    return '悪い'
-  } else if (number.value < 60) {
-    return '普通'
-  } else {
-    return '良い'
-  }
-})
 </script>
 
 <template>
   <div class="all">
-    <input v-model="cname"></input>
     <div class="chara-status">
       <span class="cname">キャラ名: {{test.name }}</span>
       <span class="cstatus">健康状態: {{ test.status }}</span>
@@ -86,19 +85,20 @@ const message = computed(() => {
     <p class="cmessage">{{ cmessage }}</p>
     
     <div class="buttons">
-      <button @click="sleepCharacter" class="sleepbtn">
+      <button @click="recordSleep" class="sleepbtn">
         <img src="/sleep_cat.png" class="btn_img"></img>
         <p class="btn_t">就寝</p>
       </button>
-      <button @click="wakeUpCharacter" class="wakebtn">
+      <button @click="recordWake" class="wakebtn">
         <img src="/wake_cat.png" class="btn_img"></img>
         <p class="btn_t">起床</p>
       </button>
       <!-- <input id="meal"></input> -->
-      <input id="test" type="number" v-model.number="number" class="tinput">
+      <input id="test" v-model="meal" class="tinput" placeholder="食事内容を入力">
     </div>
 
     <div class="status">
+      <p v-if="meal" class="time">食べたもの: {{ meal }}</p>
       <p v-if="sleepTime" class="time">就寝時刻: {{ sleepTime }}</p>
       <p v-if="wakeTime" class="time">起床時刻: {{ wakeTime }}</p>
     </div>

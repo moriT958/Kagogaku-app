@@ -4,6 +4,11 @@ import { createCharacter } from '../libs/saveCharacter'
 
 const cname = ref('')
 const cimage = ref(null)
+const selectedImage = ref(null)
+
+const goToTrain=()=>{
+    window.location.hash='/Train'
+  }
 
 const convertUrlToBase64 = async (url) => {
   const response = await fetch(url)
@@ -19,6 +24,8 @@ const handleCreate = async () => {
   try {
     const result = await createCharacter(cname.value, cimage.value)
     alert(`キャラクター作成成功！ID: ${result.id}`)
+    goToTrain()
+
   } catch (error) {
     alert(`エラー: ${error.message}`)
   }
@@ -26,8 +33,8 @@ const handleCreate = async () => {
 
 const saveImage = (url) => {
   localStorage.setItem('c1', url)
-  alert(`選択した画像を保存しました: ${url}`)
   cimage.value = url
+  selectedImage.value = url;
   console.log("Base64変換結果:", cimage.value.slice(0, 50) + "...")
 }
 
@@ -35,29 +42,32 @@ const saveImage = (url) => {
 
 <template>
   <div>
-    <h2>キャラ画像を選択</h2>
+    <h2>育成するキャラを選択</h2>
     <div class="image-list">
       <!-- 画像1 -->
       <img 
-        src="/bucket_boy.png" 
+        src="/niku.jpg" 
         alt="キャラ1"
-        @click="saveImage('/bucket_boy.png')"
+        @click="saveImage('/niku.jpg')"
+        :class="{selected: selectedImage === '/niku.jpg', dimmed:  selectedImage && selectedImage !== '/niku.jpg'}"
       />
       <!-- 画像2 -->
       <img 
         src="/mascot1.png" 
         alt="キャラ2"
         @click="saveImage('/mascot1.png')"
+        :class="{selected: selectedImage === '/mascot1.png', dimmed:  selectedImage && selectedImage !== '/mascot1.png'}"
       />
       <!-- 画像3 -->
       <img 
-        src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhFEro64Nm55L1dVyHRAcfxmBk10XUp8LhnimtcACnq4y3NcQ2CL90khDUTdwXKhlAc4bSXDZ79Zuo8rLSazzCwH61-iuyQgTLCaDtb5Ol4kJfPvswy2qOa1lbO1-RiIA8rMf_VkuRdBnKQ/s180-c/sori_snow_boy.png" 
+        src="/penguin.png" 
         alt="キャラ3"
-        @click="saveImage('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhFEro64Nm55L1dVyHRAcfxmBk10XUp8LhnimtcACnq4y3NcQ2CL90khDUTdwXKhlAc4bSXDZ79Zuo8rLSazzCwH61-iuyQgTLCaDtb5Ol4kJfPvswy2qOa1lbO1-RiIA8rMf_VkuRdBnKQ/s180-c/sori_snow_boy.png')"
+        @click="saveImage('/penguin.png')"
+        :class="{selected: selectedImage === '/penguin.png', dimmed:  selectedImage && selectedImage !== '/penguin.png'}"
       />
     </div>
-    <input v-model="cname"></input>
-    <button @click="handleCreate">ok</button>
+    <input v-model="cname" placeholder="キャラ名を入力"></input>
+    <button @click="handleCreate" class="btn">start</button>
 
   </div>
 </template>
@@ -77,5 +87,21 @@ img {
 }
 img:hover {
   border: 2px solid #4caf50; /* hover時に枠をつける */
+}
+/* 選択された画像 */
+.selected {
+  border: 3px solid #4caf50;
+  filter: brightness(1); /* 明るく */
+  transform: scale(1.05);
+}
+
+/* 他の画像を暗くする */
+.dimmed {
+  filter: brightness(0.5);
+}
+
+.btn{
+  border: 1px solid black;
+  margin-top: 10px;
 }
 </style>
