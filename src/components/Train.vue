@@ -8,9 +8,13 @@ const sleepingTime = ref(null)
 const selectedImage = ref(null)
 const characterName = ref('')
 
-onMounted(() =>{
-  selectedImage.value = localStorage.getItem("c1")
-  console.log("Saved image path:", selectedImage.value)
+onMounted(() => {
+  const saved = localStorage.getItem("c1")
+  if (saved) {
+    const base = import.meta.env.BASE_URL // "/Kagogaku-app/"
+    selectedImage.value = base + saved.replace(/^\//, '')
+    console.log("Resolved image path:", selectedImage.value)
+  }
 })
 
 // ボタンクリック時の関数
