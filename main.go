@@ -1,15 +1,15 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
+	"todo/api"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
 
@@ -28,25 +28,22 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// MySQL の疎通確認
-	username := os.Getenv("MYSQL_USER")
-	password := os.Getenv("MYSQL_PASSWORD")
-	database := os.Getenv("MYSQL_DATABASE")
-	host := os.Getenv("MYSQL_HOST")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?parseTime=true", username, password, host, database)
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Println("fail to connect DB:", err)
-		return
-	}
-	defer db.Close()
-	if err := db.Ping(); err != nil {
-		log.Fatal("failed to ping MySQL: ", err)
-	}
+	// ジョブワーカーを起動
+	api.StartJobWorker()
 
-	address := "0.0.0.0:8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	address := "0.0.0.0:" + port
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /hello", helloHandler)
+	mux.HandleFunc("POST /character/new", api.NewCharacterPost)
+	mux.HandleFunc("GET /character/{id}", api.CharacterGet)
+	mux.HandleFunc("PATCH /character/{id}/sleep", api.CharacterSleepPatch)
+	mux.HandleFunc("PATCH /character/{id}/wake-up", api.CharacterWakeUpPatch)
+	mux.HandleFunc("GET /train-status/{jobId}", api.TrainJobStatusGet)
+	mux.HandleFunc("POST /character/{id}/eat", api.CharacterEatPost)
 	svr := http.Server{
 		Addr:    address,
 		Handler: mux,
@@ -65,8 +62,15 @@ func init() {
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
-	// .env ファイルからの環境変数読み込み
+	// .env ファイルからの環境変数読み込み（ファイルが存在しない場合はスキップ）
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
+		slog.Warn(".env file not found, using environment variables")
 	}
+
+	// タイムゾーンを日本時間に設定
+	loc, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		log.Fatal("Failed to load timezone:", err)
+	}
+	time.Local = loc
 }
